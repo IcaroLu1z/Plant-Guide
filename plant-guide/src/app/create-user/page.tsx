@@ -1,4 +1,11 @@
+'use client'
+import { useRouter } from "next/navigation";
+
 export default function CreateUser() {
+const router = useRouter();
+const backToLogin = () => {
+    router.push("/");
+};
 return (
     <div className="flex items-center justify-center min-h-screen bg-green-100">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -74,6 +81,7 @@ return (
             <button
                 type="button"
                 className="text-sm text-green-600 hover:underline"
+                onClick={backToLogin}
             >
                 Já tenho uma conta. Entrar
             </button>
