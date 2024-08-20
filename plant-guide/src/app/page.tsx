@@ -57,7 +57,7 @@ export default function Home() {
             <button
               type="button"
               className="text-sm text-green-600 hover:underline"
-              onClick={goToForgotPassword}
+              onClick={goToCreateUser}
             >
               Cadastrar usuário
             </button>
