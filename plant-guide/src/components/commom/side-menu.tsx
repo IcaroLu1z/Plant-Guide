@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, User } from "lucide-react"; // Importação dos ícones necessários
+import { Home, LogIn, User } from "lucide-react"; // Importação dos ícones necessários
 import Link from "next/link"; // Componente Next.js para links
 import toast from "react-hot-toast"; // Biblioteca para notificações
 
@@ -23,8 +23,14 @@ export default function SideMenu() {
         {/* Link para o perfil do usuário */}
         <li className="flex items-center py-2 px-12 w-full hover:bg-green-600 hover:rounded-lg">
           <User className="mr-2" />
-          <Link href="/user">
+          <Link href="/user-perfil">
             <span>Perfil</span>
+          </Link>
+        </li>
+        <li className="flex items-center py-2 px-12 w-full hover:bg-green-600 hover:rounded-lg">
+          <LogIn className="mr-2" />
+          <Link href="/login">
+            <span>Login</span>
           </Link>
         </li>
       </ul>

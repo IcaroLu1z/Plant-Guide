@@ -2,32 +2,17 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function CreateUser() {
+export default function Home() {
     const router = useRouter();
-    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
-    const backToLogin = () => {
-        router.push("/");
-    };
-
-    const goToCreateProfile = () => {
-        router.push("/user");
-    }
-
-    const handleSignup = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-
-        if (password !== confirmPassword) {
-            setMessage("Passwords do not match!");
-            return;
-        }
-
+    
         try {
-            const response = await fetch('http://localhost:5000/signup', {
+            const response = await fetch('http://localhost:5000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,17 +22,20 @@ export default function CreateUser() {
                     password: password,
                 }),
             });
-
+    
             const data = await response.json();
-
+    
             if (response.ok) {
+                // Assuming the response includes a token
                 const { token } = data;
                 
                 // Save the token to localStorage
                 localStorage.setItem('token', token);
-                setMessage(data.message);
-                // Redirect to login page after successful signup
-                router.push("/user");
+    
+                setMessage("Login successful!");
+    
+                // Redirect to the user profile page
+                router.push("/user-perfil");
             } else {
                 setMessage(data.message);
             }
@@ -55,36 +43,22 @@ export default function CreateUser() {
             setMessage("An error occurred. Please try again.");
         }
     };
+    
+    const goToForgotPassword = () => {
+        router.push("/forgot-password");
+    };
+
+    const goToCreateUser = () => {
+        router.push("/create-user");
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-green-100">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                <h1 className="text-3xl font-bold text-center text-green-600 mb-6">
-                    Plant Guide
-                </h1>
-                <form onSubmit={handleSignup}>
+                <h1 className="text-3xl font-bold text-center text-green-600 mb-6">Plant Guide</h1>
+                <form onSubmit={handleLogin}>
                     <div className="mb-4">
-                        <label
-                            htmlFor="name"
-                            className="block text-gray-700 font-bold mb-2"
-                        >
-                            Nome Completo:
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                            placeholder="Digite seu nome completo"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="email"
-                            className="block text-gray-700 font-bold mb-2"
-                        >
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
                             Email:
                         </label>
                         <input
@@ -97,11 +71,8 @@ export default function CreateUser() {
                             required
                         />
                     </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="password"
-                            className="block text-gray-700 font-bold mb-2"
-                        >
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
                             Senha:
                         </label>
                         <input
@@ -114,29 +85,12 @@ export default function CreateUser() {
                             required
                         />
                     </div>
-                    <div className="mb-6">
-                        <label
-                            htmlFor="confirm-password"
-                            className="block text-gray-700 font-bold mb-2"
-                        >
-                            Confirmar Senha:
-                        </label>
-                        <input
-                            type="password"
-                            id="confirm-password"
-                            className="w-full text-black px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
-                            placeholder="Confirme sua senha"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </div>
                     <div className="flex items-center justify-between mb-4">
                         <button
                             type="submit"
                             className="w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300"
                         >
-                            Cadastrar
+                            Entrar
                         </button>
                     </div>
                     {message && (
@@ -148,9 +102,18 @@ export default function CreateUser() {
                         <button
                             type="button"
                             className="text-sm text-green-600 hover:underline"
-                            onClick={backToLogin}
+                            onClick={goToForgotPassword}
                         >
-                            Já tenho uma conta. Entrar
+                            Esqueci minha senha
+                        </button>
+                    </div>
+                    <div className="text-center mt-4">
+                        <button
+                            type="button"
+                            className="text-sm text-green-600 hover:underline"
+                            onClick={goToCreateUser}
+                        >
+                            Cadastrar usuário
                         </button>
                     </div>
                 </form>
