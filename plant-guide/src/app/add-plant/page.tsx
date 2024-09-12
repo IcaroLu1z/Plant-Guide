@@ -13,7 +13,7 @@ export default function AddPlant() {
   const [successMessage, setSuccessMessage] = useState("");
 
   // Função para gerenciar a alteração da foto da planta
-  const handlePlantPhotoChange = (event) => {
+  const handlePlantPhotoChange = (event: any) => {
     const file = event.target.files[0];
     setPlantPhoto(file);
     if (file) {
@@ -26,7 +26,7 @@ export default function AddPlant() {
   };
 
   // Função para cadastrar os detalhes da planta
-  const handleAddPlant = async (e) => {
+  const handleAddPlant = async (e: any) => {
     e.preventDefault();
 
     // Criar form data para enviar a foto junto com os outros campos
@@ -63,7 +63,7 @@ export default function AddPlant() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-green-100">
+    <div className="flex items-center justify-center min-h-screen bg-green-100 overflow-y-auto">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h1 className="text-3xl font-bold text-center text-green-600 mb-6">
           Cadastrar Planta
@@ -90,7 +90,7 @@ export default function AddPlant() {
               type="date"
               value={acquisitionDate}
               onChange={(e) => setAcquisitionDate(e.target.value)}
-              className="border border-gray-300 p-2 rounded-lg w-full"
+              className="border border-gray-300 p-2 rounded-lg w-full text-black"
             />
           </div>
           <div className="mb-4">

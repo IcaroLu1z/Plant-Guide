@@ -12,14 +12,14 @@ export default function ClientLayout({
   const pathname = usePathname();
 
   // Definindo as rotas que não devem exibir o SideMenu
-  const excludedPaths = ["/create-user", "/forgot-password"];
+  const excludedPaths = ["/","/create-user", "/forgot-password"];
 
   // Verifica se a rota atual está entre as que devem ser excluídas
   const shouldHideSideMenu = excludedPaths.includes(pathname);
 
   if (!shouldHideSideMenu) {
     return (
-      <div className="h-screen flex bg-green-100">
+      <div className="h-full flex bg-green-100">
         <SideMenu />
         <main className="flex-grow">{children}</main>
       </div>

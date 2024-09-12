@@ -38,12 +38,14 @@ export default function MainPage() {
                 placeholder="Digite o nome comum da planta"
                 className="border border-gray-300 p-2 rounded-lg w-full text-black"
               />
-              <button
-                onClick={handleSearch}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg mt-2 w-full"
-              >
-                Buscar
-              </button>
+              <div className="flex justify-center items-center">
+                <button
+                  onClick={handleSearch}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg mt-2 w-1/2"
+                >
+                  Buscar
+                </button>
+              </div>
             </div>
             <div className="grid grid-cols-1 gap-4">
               {searchResults.map((plant, index) => (
@@ -91,33 +93,6 @@ export default function MainPage() {
             )}
           </div>
         );
-      case "userPlants":
-        return (
-          <div className="p-4">
-            <h2 className="text-xl font-bold text-green-600 mb-4">
-              Minhas Plantas
-            </h2>
-            {userPlants.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4">
-                {userPlants.map((plant, index) => (
-                  <div
-                    key={index}
-                    className="border p-4 rounded-lg shadow-sm bg-white"
-                  >
-                    <h3 className="text-lg font-bold text-green-600">
-                      {/*plant.name*/}
-                    </h3>
-                    <p>Data de Aquisição: {/*plant.acquisitionDate*/}</p>
-                    <p>Cuidados: {/*plant.careDetails*/}</p>
-                    <p>Observações: {/*plant.observations*/}</p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-black">Você ainda não cadastrou nenhuma planta.</p>
-            )}
-          </div>
-        );
       default:
         return null;
     }
@@ -145,14 +120,6 @@ export default function MainPage() {
             onClick={() => setActiveTab("favorites")}
           >
             Favoritas
-          </button>
-          <button
-            className={`${
-              activeTab === "userPlants" ? "text-green-600" : "text-gray-500"
-            } font-bold`}
-            onClick={() => setActiveTab("userPlants")}
-          >
-            Minhas Plantas
           </button>
         </div>
         {renderContent()}
