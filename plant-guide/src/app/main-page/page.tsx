@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+const apiKey = process.env.NEXT_PUBLIC_PERENUAL_API_KEY;
 
 export default function MainPage() {
   const [activeTab, setActiveTab] = useState("search");
@@ -9,21 +11,132 @@ export default function MainPage() {
   const [searchResults, setSearchResults] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [userPlants, setUserPlants] = useState([]);
-
+  const [token, setToken] = useState(localStorage.getItem("jwtToken") || "");
 
   const handleSearch = async () => {
+    const scientificName = searchTerm;  // Use the search term as the scientific name
+
     try {
-      const response = await axios.get(`/api/plants/search?name=${searchTerm}`);
-      setSearchResults(response.data);
+      const response = await axios.get(`https://perenual.com/api/species-list`, {
+        params: {
+          key: apiKey,        // API key
+          q: scientificName   // Scientific name query
+        }
+      });
+      console.log("Plantas encontradas:", response.data);
+      setSearchResults(response.data.data);
     } catch (error) {
       console.error("Erro ao buscar plantas:", error);
     }
   };
 
+  // Load favorites from the database on component mount
+  useEffect(() => {
+    if (token) {
+      axios.get('/get-favorites', { headers: { Authorization: `Bearer ${token}` } })
+        .then(response => {
+          setFavorites(response.data.favorites);
+        })
+        .catch(error => {
+          console.error("Erro ao carregar favoritos:", error);
+        });
+    }
+  }, [token]);
 
-  {/*const addToFavorites = (plant: any) => {
-    setFavorites([...favorites, plant]);
-  };*/}
+  const addToFavorites = (plant) => {
+    const token = localStorage.getItem('token');
+  
+    if (token) {
+      axios.post(
+        'http://localhost:5000/add-favorite', 
+        { plant },  // Send the plant as part of a payload object
+        { headers: { Authorization: `Bearer ${token}` } }  // Authorization header
+      )
+      .then(response => {
+        // If the request succeeds, add the plant to the local state
+        setFavorites([...favorites, plant]);
+      })
+      .catch(error => {
+        console.error("Erro ao adicionar planta aos favoritos:", error);
+      });
+    } else {
+      console.error("Usuário não autenticado.");
+    }
+  };
+
+  const PlantsGrid = ({ searchResults }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
+
+    // Calculate total pages
+    const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+
+    // Get the plants to display on the current page
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentPlants = searchResults.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleNextPage = () => {
+      if (currentPage < totalPages) {
+        setCurrentPage(currentPage + 1);
+      }
+    };
+
+    const handlePreviousPage = () => {
+      if (currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    };
+
+    return (
+      <div>
+        <div className="grid grid-cols-1 gap-4">
+          {currentPlants.map((plant, index) => (
+            <div key={index} className="border p-4 rounded-lg shadow-sm bg-white">
+              <h3 className="text-lg font-bold text-green-600">
+                {plant.common_name}
+              </h3>
+              <p className="text-lg font-bold text-green-600">
+                {plant.scientific_name?.join(", ")}
+              </p>
+              <button
+                onClick={() => addToFavorites(plant)}
+                className="bg-yellow-500 text-white px-2 py-1 rounded mt-2"
+              >
+                Adicionar aos Favoritos
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination controls */}
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg ${
+              currentPage === 1 ? "bg-gray-400" : "bg-green-600 text-white"
+            }`}
+          >
+            Anterior
+          </button>
+
+          <span className="text-gray-700">
+            Página {currentPage} de {totalPages}
+          </span>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded-lg ${
+              currentPage === totalPages ? "bg-gray-400" : "bg-green-600 text-white"
+            }`}
+          >
+            Próxima
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -47,27 +160,10 @@ export default function MainPage() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-4">
-              {searchResults.map((plant, index) => (
-                <div
-                  key={index}
-                  className="border p-4 rounded-lg shadow-sm bg-white"
-                >
-                  <h3 className="text-lg font-bold text-green-600">
-                    {/*plant.common_name*/}
-                  </h3>
-                  <p>{/*plant.scientific_name*/}</p>
-                  <button
-                    /*onClick={() => addToFavorites(plant)}*/
-                    className="bg-yellow-500 text-white px-2 py-1 rounded mt-2"
-                  >
-                    Adicionar aos Favoritos
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+            <PlantsGrid searchResults={searchResults} />
+          </div>  
         );
+          
       case "favorites":
         return (
           <div className="p-4">
@@ -82,9 +178,11 @@ export default function MainPage() {
                     className="border p-4 rounded-lg shadow-sm bg-white"
                   >
                     <h3 className="text-lg font-bold text-green-600">
-                      {/*plant.common_name*/}Planta 1
+                      {plant.common_name}
                     </h3>
-                    <p>{/*plant.scientific_name*/}Planta 1</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {plant.scientific_name}
+                    </p>
                   </div>
                 ))}
               </div>
