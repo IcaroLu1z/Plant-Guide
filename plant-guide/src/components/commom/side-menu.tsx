@@ -1,15 +1,9 @@
 "use client";
 
-<<<<<<< HEAD
 import { Home, User, LogOut, MessageSquareText } from "lucide-react"; 
 import Link from "next/link"; 
 import toast from "react-hot-toast"; 
 import { signOut } from "next-auth/react";
-=======
-import { Home, LogIn, User } from "lucide-react"; // Importação dos ícones necessários
-import Link from "next/link"; // Componente Next.js para links
-import toast from "react-hot-toast"; // Biblioteca para notificações
->>>>>>> 01c7978471535476dfaef157637e24dd54955dc5
 
 export default function SideMenu() {
   // Função de exemplo para exibir uma notificação de funcionalidade não implementada
@@ -41,7 +35,6 @@ export default function SideMenu() {
           </Link>
         </li>
         <li className="flex items-center py-2 px-12 w-full hover:bg-green-600 hover:rounded-lg">
-<<<<<<< HEAD
           <MessageSquareText className="mr-2"/>
           <Link href="/forum">
             <span>Fórum</span>
@@ -56,13 +49,6 @@ export default function SideMenu() {
             <span>Logout</span>
           </button>
         </li>
-=======
-          <LogIn className="mr-2" />
-          <Link href="/login">
-            <span>Login</span>
-          </Link>
-        </li>
->>>>>>> 01c7978471535476dfaef157637e24dd54955dc5
       </ul>
     </nav>
   );

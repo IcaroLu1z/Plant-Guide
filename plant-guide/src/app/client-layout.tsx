@@ -1,4 +1,3 @@
-// client-layout.tsx
 "use client";
 
 import SideMenu from "@/components/commom/side-menu"; // Ajuste o caminho conforme necessário
